@@ -1,0 +1,23 @@
+---
+import ListHeader from '~/components/list/ListHeader.astro'
+import TagCloud from '~/components/list/TagCloud.astro'
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import StandardLayout from '~/layouts/StandardLayout.astro'
+import { getAllPosts, getTags } from '~/lib/content'
+import { pagesConfig } from '~/site.config'
+
+const config = pagesConfig.tags
+const tags = await getTags()
+const posts = await getAllPosts()
+---
+
+<BaseLayout title={config.title} description={config.description}>
+  <StandardLayout>
+    <div slot="header" class="px-6 sm:px-8 pt-8">
+      <ListHeader title={config.title} description={config.description} />
+    </div>
+    <div class="px-6 sm:px-8 pb-10">
+      <TagCloud tags={tags} totalPosts={posts.length} />
+    </div>
+  </StandardLayout>
+</BaseLayout>

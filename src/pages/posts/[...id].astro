@@ -1,0 +1,94 @@
+---
+import { render } from 'astro:content'
+import ArticleLayout from '~/layouts/ArticleLayout.astro'
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import ArticleMeta from '~/components/article/ArticleMeta.astro'
+import ArticleNav from '~/components/article/ArticleNav.astro'
+import SiblingMenu from '~/components/article/SiblingMenu.astro'
+import TableOfContents from '~/components/article/TableOfContents.astro'
+import BackToTop from '~/components/common/BackToTop.astro'
+import {
+  getAdjacentPosts,
+  getAllPosts,
+  getPostsByTagSlug,
+  getTagNameBySlug,
+  type ResolvedPost,
+} from '~/lib/content'
+import '~/styles/markdown.css'
+
+export async function getStaticPaths() {
+  const posts = await getAllPosts()
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: { post },
+  }))
+}
+
+interface Props {
+  post: ResolvedPost
+}
+
+const { post } = Astro.props
+const { Content, headings } = await render(post)
+const requestedTagSlug = Astro.url.searchParams.get('tag')?.trim() || null
+const tagName = requestedTagSlug ? await getTagNameBySlug(requestedTagSlug) : null
+const inTagContext =
+  Boolean(tagName) && post.data.tags.some((tag) => tag.trim() === tagName)
+const entries = inTagContext && requestedTagSlug ? await getPostsByTagSlug(requestedTagSlug) : await getAllPosts()
+const adjacent = getAdjacentPosts(entries, post.id)
+const backHref = '/posts'
+const backLabel = 'Back to Posts'
+---
+
+<BaseLayout title={post.data.title} description={post.data.description} mainTransition={false}>
+  <ArticleLayout>
+    <Fragment slot="left">
+      <SiblingMenu currentId={post.id} entries={entries} tagSlug={inTagContext ? requestedTagSlug : null} />
+    </Fragment>
+
+    <Fragment slot="right">
+      <TableOfContents headings={headings} />
+    </Fragment>
+
+    <div class="relative flex flex-col justify-between h-fit z-[1]">
+      <div class="article-content-pane">
+        <article class="relative">
+          <div class="px-6 sm:px-8 py-4 sm:py-6 lg:py-8">
+            <div class="global-layout-width mx-auto">
+              <ArticleMeta post={post} />
+              <div class="markdown">
+                <Content />
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <ArticleNav
+          prev={adjacent.prev}
+          next={adjacent.next}
+          tagSlug={inTagContext ? requestedTagSlug : null}
+        />
+      </div>
+
+      <BackToTop class="xl:hidden fixed bottom-14 sm:right-8 right-6 z-50" />
+      <div
+        data-desktop-controls
+        style="bottom: 96px"
+        class="hidden xl:flex fixed right-[calc(50%-var(--layout-half-width))] translate-x-full p-4 z-40"
+      >
+        <div class="flex items-center gap-2">
+          <a
+            href={backHref}
+            class="group flex items-center gap-2 px-3 py-2 bg-primary/4 hover:bg-primary/10 text-primary/70 hover:text-primary transition-colors duration-200 dark:bg-primary/10 dark:hover:bg-primary/15"
+          >
+            <span
+              class="icon-[ph--arrow-left] size-4 transition-transform duration-200 group-hover:-translate-x-0.5"
+            />
+            <span class="text-sm font-medium">{backLabel}</span>
+          </a>
+          <BackToTop />
+        </div>
+      </div>
+    </div>
+  </ArticleLayout>
+</BaseLayout>

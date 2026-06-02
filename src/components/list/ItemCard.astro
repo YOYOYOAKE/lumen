@@ -1,0 +1,59 @@
+---
+import { isExternalLink, isIconClass } from '~/lib/utils'
+
+interface Item {
+  name: string
+  description: string
+  url: string
+  icon?: string
+}
+
+interface Props {
+  items: Item[]
+}
+
+const { items } = Astro.props
+---
+
+<div class="grid grid-cols-1 fade-up">
+  {
+    items.map((item) => {
+      const external = isExternalLink(item.url)
+      const content = (
+        <>
+          {item.icon && (
+            <div class="flex-shrink-0 mt-0.5">
+              {isIconClass(item.icon) ? (
+                <span class:list={['size-10', item.icon]}></span>
+              ) : (
+                <img src={item.icon} alt="icon" class="size-10 rounded-full object-cover" />
+              )}
+            </div>
+          )}
+          <div class="min-w-0">
+            <div class="font-semibold text-lg/relaxed">{item.name}</div>
+            <p class="text-muted-foreground">{item.description}</p>
+          </div>
+        </>
+      )
+
+      return external ? (
+        <a
+          href={item.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group relative flex items-center gap-4 hover:bg-muted/30 dark:hover:bg-muted/30 transition-colors duration-300 px-6 sm:px-8 py-4"
+        >
+          {content}
+        </a>
+      ) : (
+        <a
+          href={item.url}
+          class="group relative flex items-center gap-4 hover:bg-muted/30 dark:hover:bg-muted/30 transition-colors duration-300 px-6 sm:px-8 py-4"
+        >
+          {content}
+        </a>
+      )
+    })
+  }
+</div>

@@ -1,0 +1,98 @@
+---
+interface Heading {
+  depth: number
+  slug: string
+  text: string
+}
+
+interface Props {
+  headings: Heading[]
+}
+
+const { headings } = Astro.props
+const hiddenHeadingSlugs = new Set(['footnote-label', 'user-content-footnote-label'])
+const filteredHeadings = headings.filter(
+  (heading) => heading.depth <= 4 && heading.text.trim() && !hiddenHeadingSlugs.has(heading.slug),
+)
+const minDepth =
+  filteredHeadings.length > 0 ? Math.min(...filteredHeadings.map((heading) => heading.depth)) : 2
+const indentMap = ['ml-0', 'ml-4', 'ml-8', 'ml-12']
+
+function getIndent(depth: number): string {
+  return indentMap[depth - minDepth] ?? 'ml-12'
+}
+
+const sections: { levelOne: Heading; children: (Heading & { indentClass: string })[] }[] = []
+
+for (const heading of filteredHeadings) {
+  const current = sections[sections.length - 1]
+  if (heading.depth === minDepth || !current) {
+    sections.push({ levelOne: heading, children: [] })
+  } else {
+    current.children.push({ ...heading, indentClass: getIndent(heading.depth) })
+  }
+}
+---
+
+{
+  filteredHeadings.length > 0 && (
+    <div class="relative">
+      <nav class="p-4">
+        <h3 class="font-sans text-sm font-medium mb-4 text-foreground/80 flex items-center gap-2 pl-2">
+          <span class="icon-[fluent--list-20-filled] w-4 h-4 opacity-85"></span>
+          <span>Article</span>
+        </h3>
+        <div class="relative">
+          <div
+            data-article-toc-scroll
+            class="relative h-[calc(100vh-24rem)] overflow-y-auto no-scrollbar pr-1"
+          >
+            <ul
+              class="space-y-2 relative w-full transition-transform duration-300 will-change-transform"
+              style="content-visibility: auto"
+            >
+              {sections.map((section) => (
+                <>
+                  <li class="ml-0 font-medium text-foreground">
+                    <a
+                      href={`#${section.levelOne.slug}`}
+                      data-heading-id={section.levelOne.slug}
+                      class="toc-link group flex items-center text-sm min-h-[1.75rem] w-full overflow-hidden relative hover:bg-gradient-to-r hover:from-primary/10 dark:hover:from-primary/25 hover:to-transparent"
+                    >
+                      <span class="leading-[1.75rem] truncate px-2 group-hover:text-primary" title={section.levelOne.text}>
+                        {section.levelOne.text}
+                      </span>
+                    </a>
+                  </li>
+                  {section.children.map((child) => (
+                    <li class:list={[child.indentClass, 'text-foreground/60 hover:text-foreground/90']}>
+                      <a
+                        href={`#${child.slug}`}
+                        data-heading-id={child.slug}
+                        class="toc-link group flex items-center text-sm min-h-[1.75rem] w-full overflow-hidden relative hover:bg-gradient-to-r hover:from-primary/10 dark:hover:from-primary/25 hover:to-transparent"
+                      >
+                        <span class="leading-[1.75rem] truncate px-2 group-hover:text-primary" title={child.text}>
+                          {child.text}
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                </>
+              ))}
+            </ul>
+          </div>
+          <div
+            data-article-toc-mask="top"
+            aria-hidden="true"
+            class="pointer-events-none absolute inset-x-0 top-0 z-10 h-8 bg-gradient-to-b from-background/95 via-background/70 to-transparent opacity-0 transition-opacity duration-200"
+          />
+          <div
+            data-article-toc-mask="bottom"
+            aria-hidden="true"
+            class="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-8 bg-gradient-to-t from-background/95 via-background/70 to-transparent opacity-0 transition-opacity duration-200"
+          />
+        </div>
+      </nav>
+    </div>
+  )
+}

@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+public/fonts/lxgw-wenkai/
+test-results/
+playwright-report/
+*.log

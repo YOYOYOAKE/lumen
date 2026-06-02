@@ -1,0 +1,31 @@
+---
+import ListHeader from '~/components/list/ListHeader.astro'
+import PostListItem from '~/components/list/PostListItem.astro'
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import StandardLayout from '~/layouts/StandardLayout.astro'
+import { getPostsByTagSlug, getTagNameBySlug, getTags } from '~/lib/content'
+
+export async function getStaticPaths() {
+  const tags = await getTags()
+  return tags.map((tag) => ({
+    params: { tag: tag.slug },
+  }))
+}
+
+const tagSlug = Astro.params.tag ?? ''
+const tagName = await getTagNameBySlug(tagSlug)
+const posts = await getPostsByTagSlug(tagSlug)
+const title = `#${tagName ?? tagSlug}`
+const description = `${posts.length} posts`
+---
+
+<BaseLayout title={title} description={description}>
+  <StandardLayout>
+    <div slot="header" class="px-6 sm:px-8 pt-8">
+      <ListHeader title={title} description={description} />
+    </div>
+    <div class="px-6 sm:px-8 mt-12 pb-10 fade-up animation-delay-100">
+      {posts.map((post, index) => <PostListItem post={post} index={index} tagSlug={tagSlug} />)}
+    </div>
+  </StandardLayout>
+</BaseLayout>

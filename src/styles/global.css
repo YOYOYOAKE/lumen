@@ -1,0 +1,451 @@
+/* ===== 导入依赖 ===== */
+@import 'tailwindcss';
+@plugin "@tailwindcss/typography";
+@plugin "@iconify/tailwind4";
+
+/* ===== 暗色模式配置 ===== */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ===== 主题变量 ===== */
+@theme {
+  /* 字体系统 */
+  --font-serif: var(--font-lexend);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* 颜色系统 */
+  --color-border: hsl(var(--border));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-tag-bg: hsl(var(--tag-bg));
+  --color-tag-bg-hover: hsl(var(--tag-bg-hover));
+  --color-tag-border: hsl(var(--tag-border));
+  --color-tag-text: hsl(var(--tag-text));
+  --color-scrollbar: hsl(var(--scrollbar));
+  --color-scrollbar-bg: hsl(var(--scrollbar-bg));
+}
+
+/* ===== 颜色变量 ===== */
+@layer base {
+  :root {
+    /* 字体族 */
+    --font-lexend: 'LXGW WenKai', ui-sans-serif, system-ui, sans-serif;
+    --font-sans: 'LXGW WenKai', ui-sans-serif, system-ui, sans-serif;
+    --font-geist-mono:
+      'LXGW WenKai Mono', ui-monospace, Menlo, 'Cascadia Mono', 'Liberation Mono', monospace;
+
+    /* 基础色调 */
+    --background: 255 100% 100%;
+    --foreground: 225 15% 12%;
+
+    /* 交互状态 */
+    --accent: 220 25% 94%;
+    --accent-foreground: 225 15% 12%;
+
+    /* 主要强调色 */
+    --primary: 225 15% 12%;
+    --primary-foreground: 220 30% 98%;
+
+    /* 弱化元素 */
+    --muted: 220 25% 92%;
+    --muted-foreground: 225 10% 40%;
+    --border: 220 20% 90%;
+    --ring: 225 15% 12%;
+
+    /* 标签系统 */
+    --tag-bg: 220 25% 96%;
+    --tag-bg-hover: 220 25% 85%;
+    --tag-border: 220 25% 90%;
+    --tag-text: 225 15% 35%;
+
+    /* 滚动条 */
+    --scrollbar: 220 20% 80%;
+    --scrollbar-bg: 220 25% 95%;
+
+    /* 布局宽度变量 */
+    --layout-width: 48rem;
+    --layout-half-width: calc(var(--layout-width) / 2);
+    --layout-change-width: 136rem;
+    --sidebar-width: clamp(12rem, 18vw, 18rem);
+    --duration-scene-fade: 240ms;
+    --duration-standard-content: 240ms;
+    --duration-article-scene-enter: 240ms;
+    --duration-article-scene-leave: 240ms;
+    --duration-article-content-leave: 240ms;
+    --duration-article-content-enter: 240ms;
+  }
+
+  @media (min-width: 136rem) {
+    :root {
+      --layout-width: 56rem;
+    }
+  }
+
+  /* 全局布局宽度工具类 */
+  .global-layout-width {
+    max-width: var(--layout-width);
+  }
+
+  /* 暗色模式变量 */
+  .dark {
+    --background: 240 10% 4%;
+    --foreground: 0 0% 98%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --border: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --tag-bg: 240 20% 13%;
+    --tag-bg-hover: 240 20% 25%;
+    --tag-border: 240 20% 20%;
+    --tag-text: 240 15% 85%;
+    --scrollbar: 240 10% 30%;
+    --scrollbar-bg: 240 10% 15%;
+  }
+}
+
+/* ===== 基础样式 ===== */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    color-scheme: light;
+    background-color: var(--color-background);
+    font-family: var(--font-sans);
+    scroll-behavior: smooth;
+    overflow-y: scroll;
+    scrollbar-gutter: stable both-edges;
+    @variant dark {
+      color-scheme: dark;
+    }
+  }
+
+  body {
+    @apply min-h-screen bg-background text-foreground;
+    font-family: 'LXGW WenKai', ui-sans-serif, system-ui, sans-serif;
+    font-weight: normal;
+  }
+
+  /* 标题样式 */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-serif font-medium;
+  }
+
+  /* 链接样式 */
+  a {
+    @apply underline-offset-4;
+  }
+
+  /* 工具类 */
+  .pro {
+    @apply prose prose-zinc dark:prose-invert;
+  }
+}
+
+/* ===== 动画效果 ===== */
+@layer base {
+  /* 淡入上升动画 */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(2rem);
+    animation: fadeUp 0.6s forwards;
+  }
+
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(2rem);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes scroll {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-25%, 0, 0);
+    }
+  }
+
+  @keyframes scroll-reverse {
+    from {
+      transform: translate3d(-25%, 0, 0);
+    }
+    to {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  .animation-delay-100 {
+    animation-delay: 100ms;
+  }
+  .animation-delay-150 {
+    animation-delay: 150ms;
+  }
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  @keyframes articleFadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .skeleton-shimmer {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(
+      90deg,
+      hsl(var(--muted) / 0.52) 0%,
+      hsl(var(--muted) / 0.78) 50%,
+      hsl(var(--muted) / 0.52) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeletonShimmer 1.15s linear infinite;
+  }
+
+  @keyframes skeletonShimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton-shimmer {
+      animation: none;
+      background-position: 50% 0;
+    }
+  }
+
+  .safari-only {
+    transform-style: preserve-3d;
+  }
+
+  .safari-item {
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    contain: layout style paint;
+    will-change: transform;
+  }
+
+  /* 主题切换动画 */
+  html.disable-transition,
+  html.disable-transition * {
+    transition: none !important;
+  }
+
+  html.theme-switching,
+  html.theme-switching body {
+    transition-property: background-color, color;
+    transition-duration: 560ms;
+    transition-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+}
+
+/* ===== 滚动条样式 ===== */
+/* Firefox */
+@supports (scrollbar-width: auto) {
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: hsl(var(--scrollbar)) hsl(var(--scrollbar-bg));
+  }
+}
+
+/* Webkit */
+@supports selector(::-webkit-scrollbar) {
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar:horizontal {
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background: hsl(var(--scrollbar-bg));
+  }
+  ::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: hsl(var(--scrollbar));
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--scrollbar) / 0.8);
+  }
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ===== 工具类 ===== */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+/* 时间线滑入动画 */
+@keyframes slide-down {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+
+.animate-slide-down {
+  animation: slide-down 0.3s ease-out forwards;
+}
+
+.scene-fade-enter-active,
+.scene-fade-leave-active {
+  transition: opacity var(--duration-scene-fade) ease-out;
+}
+
+.scene-fade-enter-from,
+.scene-fade-leave-to {
+  opacity: 0;
+}
+
+.scene-fade-enter-to,
+.scene-fade-leave-from {
+  opacity: 1;
+}
+
+.standard-content-enter-active.standard-content-pane,
+.standard-content-enter-active .standard-content-pane,
+.standard-content-leave-active.standard-content-pane,
+.standard-content-leave-active .standard-content-pane {
+  transition: opacity var(--duration-standard-content) ease-out;
+  will-change: opacity;
+}
+
+.standard-content-enter-from.standard-content-pane,
+.standard-content-enter-from .standard-content-pane,
+.standard-content-leave-to.standard-content-pane,
+.standard-content-leave-to .standard-content-pane {
+  opacity: 0;
+}
+
+.standard-content-enter-to.standard-content-pane,
+.standard-content-enter-to .standard-content-pane,
+.standard-content-leave-from.standard-content-pane,
+.standard-content-leave-from .standard-content-pane {
+  opacity: 1;
+}
+
+.article-scene-pane {
+  --scene-pane-x: 0px;
+}
+
+.article-scene-pane-left {
+  --scene-pane-x: -100%;
+  transform: translate3d(var(--scene-pane-x), 0, 0);
+}
+
+.article-scene-pane-right {
+  --scene-pane-x: 100%;
+  transform: translate3d(var(--scene-pane-x), 0, 0);
+}
+
+.article-scene-enter-active .article-scene-pane {
+  transition:
+    opacity var(--duration-article-scene-enter) ease-out,
+    transform var(--duration-article-scene-enter) ease-out;
+  will-change: opacity, transform;
+}
+
+.article-scene-enter-from .article-scene-pane {
+  opacity: 0;
+  transform: translate3d(var(--scene-pane-x), 14px, 0);
+}
+
+.article-scene-enter-to .article-scene-pane,
+.article-scene-leave-from .article-scene-pane {
+  opacity: 1;
+  transform: translate3d(var(--scene-pane-x), 0, 0);
+}
+
+.article-scene-leave-active .article-scene-pane {
+  transition: opacity var(--duration-article-scene-leave) ease-out;
+  will-change: opacity;
+}
+
+.article-scene-leave-to .article-scene-pane {
+  opacity: 0;
+  transform: translate3d(var(--scene-pane-x), 0, 0);
+}
+
+.article-content-enter-active.article-content-pane,
+.article-content-enter-active .article-content-pane {
+  transition:
+    opacity var(--duration-article-content-enter) ease-out,
+    transform var(--duration-article-content-enter) ease-out;
+  will-change: opacity, transform;
+}
+
+.article-content-enter-from.article-content-pane,
+.article-content-enter-from .article-content-pane {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.article-content-enter-to.article-content-pane,
+.article-content-enter-to .article-content-pane,
+.article-content-leave-from.article-content-pane,
+.article-content-leave-from .article-content-pane {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.article-content-leave-active.article-content-pane,
+.article-content-leave-active .article-content-pane {
+  transition: opacity var(--duration-article-content-leave) ease-out;
+  will-change: opacity;
+}
+
+.article-content-leave-to.article-content-pane,
+.article-content-leave-to .article-content-pane {
+  opacity: 0;
+  transform: translateY(0);
+}

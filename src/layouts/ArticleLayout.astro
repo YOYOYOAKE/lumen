@@ -1,0 +1,31 @@
+---
+import { articlePaneTransition } from '~/lib/transitions'
+---
+
+<div class="relative">
+  <div
+    data-article-left-pane
+    class="article-scene-pane article-scene-pane-left hidden xl:block fixed top-30 left-[calc(50%-var(--layout-half-width))] w-[clamp(12rem,18vw,18rem)]"
+    transition:name="article-left"
+    transition:animate={articlePaneTransition}
+    transition:persist="article-left"
+  >
+    <slot name="left" />
+  </div>
+
+  <div
+    class="article-scene-pane article-scene-pane-main"
+    transition:name="article-main"
+    transition:animate={articlePaneTransition}
+  >
+    <slot />
+  </div>
+
+  <div
+    class="article-scene-pane article-scene-pane-right hidden xl:block fixed top-30 right-[calc(50%-var(--layout-half-width))] w-[clamp(12rem,18vw,18rem)]"
+    transition:name="article-toc"
+    transition:animate={articlePaneTransition}
+  >
+    <slot name="right" />
+  </div>
+</div>

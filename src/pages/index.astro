@@ -1,0 +1,34 @@
+---
+import HeroSection from '~/components/home/HeroSection.astro'
+import RecentPosts from '~/components/home/RecentPosts.astro'
+import SkillsMarquee from '~/components/home/SkillsMarquee.astro'
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import StandardLayout from '~/layouts/StandardLayout.astro'
+import { getRecentPosts } from '~/lib/content'
+import { pagesConfig } from '~/site.config'
+
+const home = pagesConfig.home
+const recentPosts = await getRecentPosts(home.recentPosts.count)
+---
+
+<BaseLayout title={home.title} description={home.description}>
+  <StandardLayout>
+    <HeroSection
+      slot="header"
+      title={home.title}
+      subtitle={home.description}
+      paragraphs={home.intro}
+      social={home.social}
+    />
+    {home.skills.enabled && home.skills.rows.length > 0 && <SkillsMarquee config={home.skills} />}
+    {
+      home.recentPosts.enabled && (
+        <RecentPosts
+          title={home.recentPosts.title}
+          subtitle={home.recentPosts.description}
+          posts={recentPosts}
+        />
+      )
+    }
+  </StandardLayout>
+</BaseLayout>

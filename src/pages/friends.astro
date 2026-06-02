@@ -1,0 +1,26 @@
+---
+import ItemCard from '~/components/list/ItemCard.astro'
+import ListHeader from '~/components/list/ListHeader.astro'
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import StandardLayout from '~/layouts/StandardLayout.astro'
+import { pagesConfig } from '~/site.config'
+
+const config = pagesConfig.friends
+const items = config.links.map((friend) => ({
+  name: friend.name,
+  description: friend.description,
+  url: friend.website,
+  icon: friend.icon,
+}))
+---
+
+<BaseLayout title={config.title} description={config.description}>
+  <StandardLayout>
+    <div slot="header" class="px-6 sm:px-8 pt-8">
+      <ListHeader title={config.title} description={config.description} />
+    </div>
+    <div class="pb-10">
+      <ItemCard items={items} />
+    </div>
+  </StandardLayout>
+</BaseLayout>

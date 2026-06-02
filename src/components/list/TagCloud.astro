@@ -1,0 +1,63 @@
+---
+import type { TagItem } from '~/lib/content'
+
+interface Props {
+  tags: TagItem[]
+  totalPosts: number
+}
+
+const { tags, totalPosts } = Astro.props
+---
+
+<div>
+  <div class="mt-6 flex items-center gap-6 text-sm text-muted-foreground">
+    <span class="flex items-center gap-1.5">
+      <span class="icon-[ph--hash] size-4"></span>
+      {tags.length} Tags
+    </span>
+    <span class="flex items-center gap-1.5">
+      <span class="icon-[ph--article] size-4"></span>
+      {totalPosts} Posts
+    </span>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-0 fade-up mt-8">
+    {
+      tags.map((tag) => (
+        <a
+          href={`/tags/${tag.slug}`}
+          class="group relative block bg-transparent hover:bg-muted/30 transition-colors duration-200 p-4"
+        >
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2 min-w-0 flex-1">
+              <span class="icon-[ph--hash] size-4 text-muted-foreground group-hover:text-primary transition-colors"></span>
+              <span
+                class:list={[
+                  'font-medium text-foreground group-hover:text-primary transition-colors truncate',
+                  tag.count >= 10 ? 'text-base' : tag.count >= 5 ? 'text-sm' : 'text-xs',
+                ]}
+              >
+                {tag.name}
+              </span>
+            </div>
+            <div class="flex items-center gap-1 ml-2">
+              <span class="text-xs text-muted-foreground group-hover:text-foreground transition-colors">
+                {tag.count}
+              </span>
+              <span class="icon-[ph--article] size-3.5 text-muted-foreground/70 group-hover:text-muted-foreground transition-colors"></span>
+            </div>
+          </div>
+        </a>
+      ))
+    }
+  </div>
+
+  {
+    tags.length === 0 && (
+      <div class="text-center py-12">
+        <span class="icon-[ph--tag] size-12 text-muted-foreground/50 mx-auto block mb-4"></span>
+        <p class="text-muted-foreground">No tags available</p>
+      </div>
+    )
+  }
+</div>

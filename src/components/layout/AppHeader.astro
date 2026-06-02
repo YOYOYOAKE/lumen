@@ -1,0 +1,78 @@
+---
+import ThemeToggle from './ThemeToggle.astro'
+import { navigationConfig, siteConfig } from '~/site.config'
+
+const links = navigationConfig.header
+const currentPath = Astro.url.pathname
+
+function isActive(href: string): boolean {
+  if (href === '/') return currentPath === '/'
+  return currentPath.startsWith(href)
+}
+---
+
+<div
+  class="fixed inset-0 max-w-none hidden overflow-hidden md:block pointer-events-none dark:opacity-100"
+>
+  <div
+    class="absolute left-1/2 top-[-14.5px] ml-[-41.5rem] h-[25rem] w-[80rem] dark:[mask-image:linear-gradient(white,transparent)]"
+  >
+    <div
+      class="absolute inset-0 bg-gradient-to-r from-blue-400/25 to-blue-800/25 opacity-40 [mask-image:radial-gradient(farthest-side_at_top,white,transparent)] dark:from-blue-500/30 dark:to-blue-800/30 dark:opacity-100"
+    />
+    <svg
+      viewBox="0 0 1113 440"
+      aria-hidden="true"
+      class="absolute left-1/2 top-0 ml-[-19rem] w-[69.5625rem] fill-background dark:fill-zinc-950 blur-[26px]"
+    >
+      <path d="M.016 439.5s-9.5-300 434-300S882.516 20 882.516 20V0h230.004v439.5H.016Z" />
+    </svg>
+  </div>
+</div>
+
+<header>
+  <div
+    class="mx-auto global-layout-width flex flex-wrap items-center gap-x-3 gap-y-2 px-6 sm:px-8 py-4 lg:px-8 sm:gap-x-6"
+  >
+    <div class="order-1 flex items-center flex-shrink-0">
+      <img src={siteConfig.avatar} alt="Avatar" class="w-8 h-8" width="32" height="32" />
+    </div>
+
+    <nav class="order-3 w-full sm:order-2 sm:w-auto" aria-label="Primary">
+      <div class="flex gap-1">
+        {
+          links.map((link) => (
+            <a
+              href={link.href}
+              class:list={[
+                'text-sm px-2 sm:px-4 py-2 font-medium first:pl-0 sm:first:pl-4',
+                'transition-colors text-foreground/50 hover:bg-accent hover:text-foreground',
+                isActive(link.href) && 'text-foreground',
+              ]}
+            >
+              {link.label}
+            </a>
+          ))
+        }
+      </div>
+    </nav>
+
+    <div class="order-2 ml-auto flex items-center flex-shrink-0 gap-2">
+      <ThemeToggle />
+    </div>
+  </div>
+
+  <div class="relative global-layout-width mx-auto pointer-events-none">
+    <div
+      aria-hidden="true"
+      class="absolute inset-x-0 -top-14 bottom-0 mx-auto global-layout-width"
+    >
+      <div
+        class="to-(--color-border)/50 absolute bottom-0 left-0 top-0 w-px bg-gradient-to-b from-transparent to-75%"
+      />
+      <div
+        class="to-(--color-border)/50 absolute bottom-0 right-0 top-0 w-px bg-gradient-to-b from-transparent to-75%"
+      />
+    </div>
+  </div>
+</header>

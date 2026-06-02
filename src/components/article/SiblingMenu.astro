@@ -1,0 +1,58 @@
+---
+import type { ResolvedPost } from '~/lib/content'
+
+interface Props {
+  currentId: string
+  entries: ResolvedPost[]
+  tagSlug?: string | null
+}
+
+const { currentId, entries, tagSlug } = Astro.props
+const withTag = (href: string) => (tagSlug ? `${href}?tag=${tagSlug}` : href)
+---
+
+<div class="relative">
+  <nav class="p-4">
+    <h3 class="font-sans text-sm font-medium mb-4 text-foreground/80 flex items-center gap-2 pl-2">
+      <span class="icon-[ph--folder-notch-open] w-4 h-4 opacity-85"></span>
+      <span>Series</span>
+    </h3>
+    <div class="relative h-[calc(100vh-24rem)] overflow-y-auto no-scrollbar pr-1">
+      <ul class="space-y-2 overflow-y-auto no-scrollbar pr-1" style="content-visibility: auto">
+        {
+          entries.map((entry) => {
+            const active = entry.id === currentId
+            const itemClass = [
+              'group flex items-center text-sm min-h-[1.75rem] w-full overflow-hidden relative',
+              !active &&
+                'hover:bg-gradient-to-r hover:from-primary/10 dark:hover:from-primary/25 hover:to-transparent',
+              active && 'bg-gradient-to-r from-primary/10 dark:from-primary/25 to-transparent',
+            ]
+            const titleClass = [
+              'leading-[1.75rem] truncate px-2',
+              active ? 'text-primary' : 'group-hover:text-primary',
+            ]
+
+            return (
+              <li class="ml-0 font-medium text-foreground">
+                {active ? (
+                  <span aria-current="page" class:list={itemClass}>
+                    <span class:list={titleClass} title={entry.data.title}>
+                      {entry.data.title}
+                    </span>
+                  </span>
+                ) : (
+                  <a href={withTag(entry.href)} class:list={itemClass}>
+                    <span class:list={titleClass} title={entry.data.title}>
+                      {entry.data.title}
+                    </span>
+                  </a>
+                )}
+              </li>
+            )
+          })
+        }
+      </ul>
+    </div>
+  </nav>
+</div>

@@ -1,0 +1,62 @@
+{
+  "name": "lumen-astro",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "preinstall": "node -e \"const ua=process.env.npm_config_user_agent||'';if(!ua.startsWith('pnpm/')){console.error('This project requires pnpm. Please run: pnpm install');process.exit(1)}\"",
+    "fonts:build": "node scripts/build-fonts.mjs",
+    "predev": "pnpm fonts:build",
+    "dev": "astro dev",
+    "prebuild": "pnpm fonts:build",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "verify": "pnpm check && pnpm build",
+    "lint": "oxlint src --tsconfig tsconfig.json",
+    "format": "oxfmt .",
+    "format:check": "oxfmt . --check"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.0",
+    "astro": "^6.3.8",
+    "clsx": "^2.1.1",
+    "katex": "^0.16.22",
+    "medium-zoom": "^1.1.0",
+    "reading-time": "^1.5.0",
+    "rehype-callouts": "^2.0.2",
+    "rehype-external-links": "^3.0.0",
+    "rehype-katex": "^7.0.1",
+    "rehype-raw": "^7.0.0",
+    "rehype-sanitize": "^6.0.0",
+    "rehype-slug": "^6.0.0",
+    "rehype-unwrap-images": "^1.0.0",
+    "remark-directive": "^4.0.0",
+    "remark-directive-sugar": "^1.1.2",
+    "remark-gfm": "^4.0.0",
+    "remark-math": "^6.0.0",
+    "remark-smartypants": "^3.0.2",
+    "tailwind-merge": "^3.0.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "@iconify/json": "^2.2.321",
+    "@iconify/tailwind4": "^1.0.6",
+    "@tailwindcss/typography": "^0.5.16",
+    "@types/node": "^22.13.13",
+    "fast-glob": "^3.3.3",
+    "mdast-util-to-string": "^4.0.0",
+    "oxfmt": "^0.35.0",
+    "oxlint": "^1.50.0",
+    "playwright": "^1.60.0",
+    "shiki": "^3.2.2",
+    "tailwindcss": "^4.0.12",
+    "typescript": "^5.7.0",
+    "unist-util-visit": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "packageManager": "pnpm@10.11.1"
+}

@@ -1,0 +1,74 @@
+---
+import { ClientRouter } from 'astro:transitions'
+import AppDivider from '~/components/common/AppDivider.astro'
+import AppFooter from '~/components/layout/AppFooter.astro'
+import AppHeader from '~/components/layout/AppHeader.astro'
+import { siteConfig } from '~/site.config'
+import type { TransitionAnimationValue } from '~/lib/transitions'
+import { pageTransition } from '~/lib/transitions'
+import '~/styles/global.css'
+
+interface Props {
+  title?: string
+  description?: string
+  mainTransition?: TransitionAnimationValue | false
+}
+
+const { title, description = siteConfig.slogan, mainTransition = pageTransition } = Astro.props
+const resolvedTitle = title ? `${title} | ${siteConfig.title}` : siteConfig.title
+---
+
+<!doctype html>
+<html lang={siteConfig.lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="author" content={siteConfig.author} />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <title>{resolvedTitle}</title>
+    <link rel="icon" type="image/webp" href={siteConfig.avatar} />
+    <link rel="shortcut icon" href={siteConfig.avatar} />
+    <link rel="apple-touch-icon" href={siteConfig.avatar} />
+    <link rel="stylesheet" href="/fonts/lxgw-wenkai/fonts.css" />
+    <script is:inline>
+      (() => {
+        try {
+          const stored = localStorage.getItem('theme')
+          const dark = stored
+            ? stored === 'dark'
+            : window.matchMedia('(prefers-color-scheme: dark)').matches
+          document.documentElement.classList.toggle('dark', dark)
+        } catch {}
+      })()
+    </script>
+    <ClientRouter fallback="animate" />
+  </head>
+  <body>
+    <div class="min-h-screen flex flex-col bg-background text-primary">
+      <AppHeader />
+      <AppDivider />
+      <div class="grow flex">
+        {
+          mainTransition === false ? (
+            <main class="relative border-x border-border/50 global-layout-width mx-auto grow min-w-0">
+              <slot />
+            </main>
+          ) : (
+            <main
+              class="relative border-x border-border/50 global-layout-width mx-auto grow min-w-0"
+              transition:animate={mainTransition}
+            >
+              <slot />
+            </main>
+          )
+        }
+      </div>
+      <AppDivider class="app-bottom-divider" />
+      <AppFooter />
+    </div>
+    <script>
+      import '../scripts/app'
+    </script>
+  </body>
+</html>
