@@ -165,7 +165,7 @@ export function rehypeAddExternalLinkFavicons(options = {}) {
     })
 
     if (updatedLinkCount > 0) {
-      console.info(
+      console.debug(
         `[markdown] Added favicons to ${updatedLinkCount} external link(s) in ${getSourcePath(file)}.`,
       )
     }
