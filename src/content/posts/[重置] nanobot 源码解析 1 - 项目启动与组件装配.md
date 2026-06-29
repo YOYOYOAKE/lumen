@@ -1,9 +1,10 @@
 ---
 title: '[重置] nanobot 源码解析 1 - 项目启动与组件装配'
+description: 本文介绍 nanobot 在启动时的组件初始化与装配过程，特别是 Agent Loop。
 tags:
   - LLM/Agent
 createdAt: '2026-06-29 10:03:00'
-updatedAt: '2026-06-29 17:33:00'
+updatedAt: '2026-06-29 22:36:00'
 ---
 
 最近重新看了 nanobot 的源码，同时复盘了一下之前的笔记。朋友提到之前的笔记过于纠结细节，因此考虑重新写一篇笔记。
