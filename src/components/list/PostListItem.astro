@@ -1,6 +1,6 @@
 ---
 import { getTagSlug, type ResolvedPost } from '~/lib/content'
-import { formatDate } from '~/lib/utils'
+import { formatDate, toDateTimeISO } from '~/lib/utils'
 
 interface Props {
   post: ResolvedPost
@@ -31,7 +31,7 @@ const recommendBadge =
     <div class="flex sm:items-center gap-2 sm:gap-3 text-sm text-muted-foreground">
       <span class="inline-flex items-center gap-1.5">
         <span class="icon-[ph--calendar-blank] size-3.5 sm:size-4"></span>
-        <time datetime={post.data.createdAt.toISOString()} class="text-xs sm:text-sm">
+        <time datetime={toDateTimeISO(post.data.createdAt)} class="text-xs sm:text-sm">
           {formatDate(post.data.createdAt, 'iso')}
         </time>
       </span>
