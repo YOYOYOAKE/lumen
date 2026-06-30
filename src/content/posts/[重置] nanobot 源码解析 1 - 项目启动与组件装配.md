@@ -1,10 +1,10 @@
 ---
 title: '[重置] nanobot 源码解析 1 - 项目启动与组件装配'
-description: 本文介绍 nanobot 在启动时的组件初始化与装配过程，特别是 Agent Loop。
+description: nanobot 在启动时会初始化 Agent Loop 和 Channel 两大子系统，这两个子系统又依赖于特定的组件。本文就组件初始化与装配过程展开介绍。
 tags:
   - LLM/Agent
 createdAt: '2026-06-29 10:03:00'
-updatedAt: '2026-06-29 22:36:00'
+updatedAt: '2026-06-30 10:36:00'
 ---
 
 最近重新看了 nanobot 的源码，同时复盘了一下之前的笔记。朋友提到之前的笔记过于纠结细节，因此考虑重新写一篇笔记。
@@ -173,19 +173,19 @@ channels = ChannelManager(...)
 
 ```python
 async def run():
-	try：
-		await cron.start()
-		await asyncio.gather(agent.run(), channels.start_all())
+	  try：
+		    await cron.start()
+		    await asyncio.gather(agent.run(), channels.start_all())
 		
-  except:
-	  ...
+    except:
+	      ...
 	  
-  finally:
-    await agent.close_mcp()
-    cron.stop()
-    agent.stop()
-    await channels.stop_all()
-    agent.sessions.flush_all()
+    finally:
+        await agent.close_mcp()
+        cron.stop()
+        agent.stop()
+        await channels.stop_all()
+        agent.sessions.flush_all()
 ```
 
 `cron.start()` 会首先启动，加载 `job`、计算下次触发时间、启动后台任务定时器，然后就结束了。
