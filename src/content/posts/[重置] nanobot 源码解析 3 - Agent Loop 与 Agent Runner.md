@@ -102,7 +102,7 @@ while ctx.state is not TurnState.DONE:
 
 接下来看看每个状态都做了什么。
 
-<!-- unknown: heading_4 -->
+#### 1.2.1 RESTORE
 
 **RESTORE** 用于恢复中断现场，handler 是 `_state_restore()`*。*
 
@@ -112,7 +112,7 @@ Agent Runner 在工具执行前后会通过 `_emit_checkpoint()` 回调把当前
 
 如果用户消息刚写入会话就崩溃了，连 LLM 的消息都没来得及生成。这时候补一条错误标记，把 turn 结束。
 
-<!-- unknown: heading_4 -->
+#### 1.2.2 COMPACT
 
 **COMPACT** 用于压缩上下文，handler 是 `_state_compact()`。它主要做会话的超时自动压缩，也就是我们在 Agent Loop 初始化中创建的 **AutoCompact** 组件。
 
@@ -120,7 +120,7 @@ Agent Runner 在工具执行前后会通过 `_emit_checkpoint()` 回调把当前
 ctx.session, pending = self.auto_compact.prepare_session(ctx.session, ctx.session_key)
 ```
 
-<!-- unknown: heading_4 -->
+#### 1.2.3 COMMAND
 
 **COMMAND** 用于指令匹配，handler 是 `_state_command()`。它遍历所有已注册的指令，用正则匹配用户输入。
 
@@ -128,7 +128,7 @@ ctx.session, pending = self.auto_compact.prepare_session(ctx.session, ctx.sessio
 
 没匹配到说明是**普通对话**，返回 `"dispatch"` 进入 BUILD。
 
-<!-- unknown: heading_4 -->
+#### 1.2.4 BUILD
 
 **BUILD** 用于组装上下文，handler 是 `_state_build()` 。它调用 `ContextBuilder.build_messages()` 构造发送给 LLM 的消息列表，并**提前把用户消息写入 Session**。
 
@@ -153,7 +153,7 @@ ctx.initial_messages = self._build_initial_messages(
 
 - `[n]` user：当前用户消息 + Runtime Context（时间、工作目录等）
 
-<!-- unknown: heading_4 -->
+#### 1.2.5 RUN
 
 **RUN** 执行 Agent Loop，handler 是 `_state_run()` 。
 
@@ -199,7 +199,7 @@ elif result.stop_reason == "error":
 return result.final_content, result.tools_used, result.messages, result.stop_reason, result.had_injections
 ```
 
-<!-- unknown: heading_4 -->
+#### 1.2.6 SAVE
 
 **SAVE** 将**持久化**本次工作，handler 是 `_state_save()` 。该状态调用 `_save_turn()` 对每条消息做清理后加入 Session 消息，例如**超长工具结果截断**、**base64 图片替换为占位文本**、**Runtime Context 块剥离**、**空 assistant 消息跳过**。
 
@@ -221,7 +221,7 @@ self._schedule_background(
 )
 ```
 
-<!-- unknown: heading_4 -->
+#### 1.2.7 RESPOND
 
 **RESPOND** 发送回复，handler 为 `_state_respond()` 。
 
@@ -289,7 +289,7 @@ for iteration in range(spec.max_iterations):
 return AgentRunResult(...)
 ```
 
-<!-- unknown: heading_4 -->
+#### 2.1.1 上下文治理
 
 每次调用 LLM 前，都要整理一下消息列表。这里包括**删除孤立工具结果**、**回填缺失的工具结果**、**压缩旧工具结果**、**计算工具结果长度预算**、**裁剪消息历史**。
 
@@ -308,7 +308,7 @@ messages_for_model = self._backfill_missing_tool_results(messages_for_model)
 
 此外，你会发现 `_drop_orphan_tool_results()` 和 `_backfill_missing_tool_results()` 在流程的首尾各执行一次，这是因为裁剪消息历史时可能制造新的孤儿和缺失。
 
-<!-- unknown: heading_4 -->
+#### 2.1.2 调用 LLM
 
 调用 LLM 是通过 `_request_model()` 来实现的。这里有**流式**、**进度流式**、**非流式**三种调用方式：
 
@@ -323,7 +323,7 @@ else:
 
 流式和非流式就是字面意思，而所谓的进度流式是指**不需要逐字渲染但需要展示“正在思考”状态的场景**。
 
-<!-- unknown: heading_4 -->
+#### 2.1.3 处理 LLM 响应
 
 拿到 LLM 响应后，又要按照三种情况去处理。
 
