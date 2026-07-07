@@ -42,7 +42,6 @@ export const navigationConfig = {
   header: [
     { label: 'Home', href: '/' },
     { label: 'Posts', href: '/posts' },
-    { label: 'Friends', href: '/friends' },
     { label: 'Tags', href: '/tags' },
   ],
   footer: [
