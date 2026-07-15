@@ -3,8 +3,8 @@ title: '[重置] nanobot 源码解析 5 -工具系统与 MCP'
 description: nanobot 的工具系统赋予了 LLM 与外部交互的机制。本文就工具系统进行讲解。
 tags:
   - LLM/Agent
-createdAt: '2026-07-07'
-updatedAt: '2026-07-15'
+createdAt: '2026-07-07 01:09:00'
+updatedAt: '2026-07-15 00:56:00'
 ---
 
 从 LLM 的视角看，工具就是一组**可被调用的函数**，这通过 LLM 本身的 **Function Calling** 能力实现。每个工具（函数）有**名字**、**描述**、**参数**等，调用后返回**文本结果**。

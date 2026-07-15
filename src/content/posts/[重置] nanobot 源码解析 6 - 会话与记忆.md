@@ -3,8 +3,8 @@ title: '[重置] nanobot 源码解析 6 - 会话与记忆'
 description: nanobot 的会话和记忆系统分别实现短期记忆和长期记忆。
 tags:
   - LLM/Agent
-createdAt: '2026-07-15'
-updatedAt: '2026-07-15'
+createdAt: '2026-07-15 01:00:00'
+updatedAt: '2026-07-15 02:18:00'
 ---
 
 nanobot 的**会话**和**记忆**相互独立。
